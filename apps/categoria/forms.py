@@ -4,7 +4,7 @@ from .models import Category
 
 class CategoriaForm(forms.ModelForm):
     nome = forms.CharField(
-        label="Nome da Categoriaria",
+        label="Nome",
         widget=forms.TextInput(
             attrs={
                 'class': 'form-control', 'placeholder': 'Insira o nome da categoria'
@@ -14,14 +14,15 @@ class CategoriaForm(forms.ModelForm):
 
     descricao = forms.CharField(
         label="Descrição",
-        widget=forms.TextInput(
+        widget=forms.Textarea(
             attrs={
-                'class': 'form-control', 'placeholder': 'Insira uma descrição'
+                'class': 'form-control', 'placeholder': 'Insira uma descrição (opcional)'
             }
         )
     )
 
-    model = Category
-    fields = [
-        'nome', 'descricao'
-    ]
+    class Meta:
+        model = Category
+        fields = [
+            'nome', 'descricao'
+        ]
