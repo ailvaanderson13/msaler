@@ -4,10 +4,10 @@ from .models import Cliente
 
 class FormCliente(forms.ModelForm):
     nome = forms.CharField(
-        label="Nome da Categoriaria",
+        label="Nome",
         widget=forms.TextInput(
             attrs={
-                'class': 'form-control', 'placeholder': 'Insira o nome da categoria'
+                'class': 'form-control', 'placeholder': 'Insira o nome:'
             }
         )
     )
@@ -25,7 +25,7 @@ class FormCliente(forms.ModelForm):
         label="CPF",
         widget=forms.TextInput(
             attrs={
-                'class': 'form-control', 'placeholder': 'Insira o CPF'
+                'class': 'form-control', 'placeholder': 'Insira o CPF:'
             }
         )
     )
@@ -34,21 +34,21 @@ class FormCliente(forms.ModelForm):
         label="Telefone",
         widget=forms.TextInput(
             attrs={
-                'class': 'form-control', 'placeholder': 'Insira o telefone'
+                'class': 'form-control', 'placeholder': 'Insira o telefone com DDD:'
             }
         )
     )
 
     email = forms.EmailField(
-        label="Nome da Categoriaria",
+        label="E-mail",
         widget=forms.EmailInput(
             attrs={
-                'class': 'form-control', 'placeholder': 'Insira o nome da categoria'
+                'class': 'form-control', 'placeholder': 'Insira o e-mail'
             }
         )
     )
-
-    model = Cliente
-    fields = [
-        'nome', 'sobrenome', 'cpf', 'telefone', 'email'
-    ]
+    class Meta:
+        model = Cliente
+        fields = [
+            'nome', 'sobrenome', 'cpf', 'telefone', 'email'
+        ]

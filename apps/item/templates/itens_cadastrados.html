@@ -1,10 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base/base.html' %}
+{% block content %}
 
-</body>
-</html>
+<div class="panel-body">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+            <tr>
+                <th class="text-center">Ação</th>
+                <th class="text-center">categoria</th>
+                <th class="text-center">Nome</th>
+                <th class="text-center">data</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for u in itens %}
+            <tr>
+                <td align="center">
+                    <div class="btn-group btn-group-smd shadow" role="group" aria-label="Basic example">
+                        <a href="{% url 'item:edit-produto' u.pk %}" class="btn btn-success btn-sm shadow"><i class="fas fa-pencil-alt"></i></a>
+                    </div>
+                </td>
+                <td align="center">{{ u.categoria }}</td>
+                <td align="center">{{ u.nome }}</td>
+                <td align="center">{{ u.data }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

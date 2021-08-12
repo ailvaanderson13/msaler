@@ -6,7 +6,7 @@ from apps.categoria.models import Category
 class ItemForm(forms.ModelForm):
     categoria = forms.ModelChoiceField(
         label='Categoria',
-        queryset=Category,
+        queryset=Category.objects.filter(is_active=True),
         widget=forms.Select(
             attrs={
                 'class': 'form-control'
@@ -24,15 +24,17 @@ class ItemForm(forms.ModelForm):
     )
 
     descricao = forms.CharField(
+        required=False,
         label='Descrição',
-        widget=forms.TextInput(
+        widget=forms.Textarea(
             attrs={
                 'class': 'form-control', 'placeholder': 'Insira uma descrição: '
             }
         )
     )
 
-    model = Item
-    fields = [
-        'categoria', 'nome', 'descricao'
-    ]
+    class Meta:
+        model = Item
+        fields = [
+            'categoria', 'nome', 'descricao'
+        ]

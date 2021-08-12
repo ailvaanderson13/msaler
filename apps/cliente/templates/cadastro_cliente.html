@@ -1,10 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base/base.html' %}
+{% block content %}
 
-</body>
-</html>
+<div class="panel-body">
+    {% if notification and msg %}
+        <div class="row">
+            <div class="col" style="margin-left: 10px; margin-right: 10px">
+                <div class="alert alert-{{notification}}"><i class="fas fa-bell"></i>
+                    {{msg}}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <form class="form-horizontal" method="POST">
+        <fieldset>
+            {% csrf_token %}
+            {% for i in form %}
+            <div class="form-group">
+                <label class="col-md-1 control-label">{{ i.label }}</label>
+                <div class="col-md-11">
+                    {{ i }}
+                </div>
+            </div>
+            {% endfor %}
+            <div class="form-group">
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary btn-md pull-left">Salvar</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+{% endblock %}

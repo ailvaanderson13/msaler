@@ -3,10 +3,10 @@ from apps.store.models import Store
 
 
 class Cliente(models.Model):
-    loja = models.ForeignKey(to=Store, on_delete=models.DO_NOTHING)
+    loja = models.ForeignKey(to=Store, on_delete=models.DO_NOTHING, blank=True, null=True)
     nome = models.CharField(max_length=50)
     sobrenome = models.CharField(max_length=50)
-    cpf = models.CharField(max_length=15)
+    cpf = models.CharField(max_length=15,unique=True)
     telefone = models.CharField(max_length=200)
     email = models.EmailField(max_length=100)
     data = models.DateTimeField(auto_now_add=True)

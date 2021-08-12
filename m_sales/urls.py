@@ -20,4 +20,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(('apps.utils.urls', 'utils'), namespace='utils')),
     path('category/', include(('apps.categoria.urls', 'categoria'), namespace='categoria')),
+    path('cliente/', include(('apps.cliente.urls', 'cliente'), namespace='cliente')),
+    path('item/', include(('apps.item.urls', 'item'), namespace='item')),
 ]

@@ -1,8 +1,5 @@
 <div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
 		<div class="profile-sidebar">
-			<div class="profile-userpic">
-				<img src="http://placehold.it/50/30a5ff/fff" class="img-responsive" alt="">
-			</div>
 			<div class="profile-usertitle">
 				<div class="profile-usertitle-name">Anderson</div>
 				<div class="profile-usertitle-status"><span class="indicator label-success"></span>Online</div>
@@ -10,17 +7,17 @@
 			<div class="clear"></div>
 		</div>
 		<div class="divider"></div>
-		<form role="search">
-			<div class="form-group">
-				<input type="text" class="form-control" placeholder="Search">
-			</div>
-		</form>
 		<ul class="nav menu">
 			<li><a href="{% url 'categoria:new-category' %}"><em class="fa fa-calendar">&nbsp;</em> Nova Categoria</a></li>
-			<li><a href="{% url 'categoria:list-category' %}"><em class="fa fa-calendar">&nbsp;</em> Categorias Cadastradas</a></li>
-			<li><a href="#"><em class="fa fa-bar-chart">&nbsp;</em> Cadastro de Clientes</a></li>
-			<li><a href="#"><em class="fa fa-toggle-off">&nbsp;</em> Clientes Cadastrados</a></li>
-			<li><a href="#"><em class="fa fa-clone">&nbsp;</em> Alerts &amp; Panels</a></li>
-			<li class=""><a href="#" class="btn btn-primary"><b>Abrir Pedido</b></a></li>
+			<li><a href="{% url 'categoria:list-category' %}"><em class="fas fa-columns">&nbsp;</em> Categorias Cadastradas</a></li>
+
+			<li><a href="{% url 'cliente:new-cliente' %}"><em class="fa fa-user">&nbsp;</em> Cadastro de Clientes</a></li>
+			<li><a href="{% url 'cliente:list-cliente' %}"><em class="fa fa-users">&nbsp;</em> Clientes Cadastrados</a></li>
+
+			<li><a href="{% url 'item:new-produto' %}"><em class="fab fa-buromobelexperte"></em> Cadastro de Produto</a></li>
+			<li><a href="{% url 'item:list-produto' %}"><em class="fab fa-buffer"></em> Produtos Cadastrados</a></li>
+
+			<li><a href="#"><em class="fa fa-clone"></em> Histórico de Pedidos</a></li>
 		</ul>
-	</div><!--/.sidebar-->
+			<a href="#" class="btn btn-primary btn-block text-white"><b>Abrir Pedido</b></a>
+</div>
