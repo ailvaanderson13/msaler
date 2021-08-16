@@ -22,4 +22,5 @@ urlpatterns = [
     path('category/', include(('apps.categoria.urls', 'categoria'), namespace='categoria')),
     path('cliente/', include(('apps.cliente.urls', 'cliente'), namespace='cliente')),
     path('item/', include(('apps.item.urls', 'item'), namespace='item')),
+    path('pedido/', include(('apps.pedido.urls', 'pedido'), namespace='pedido')),
 ]

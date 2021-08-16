@@ -7,7 +7,7 @@ from apps.item.models import Item
 class PedidoForm(forms.ModelForm):
     cliente = forms.ModelChoiceField(
         label='Cliente',
-        queryset=Cliente,
+        queryset=Cliente.objects.filter(is_active=True),
         widget=forms.Select(
             attrs={
                 'class': 'form-control'
@@ -15,18 +15,18 @@ class PedidoForm(forms.ModelForm):
         )
     )
 
-    item = forms.ModelChoiceField(
-        label='Selecione os itens',
-        queryset=Item,
-        widget=forms.Select(
+    item = forms.ModelMultipleChoiceField(
+        label='Selecione os Produtos',
+        queryset=Item.objects.filter(is_active=True),
+        widget=forms.SelectMultiple(
             attrs={
-                'class': 'form-control'
+                'class': 'form-control ls-select'
             }
         )
     )
 
-    model = Pedido
-    forms = [
-        'cliente', 'item'
-    ]
-
+    class Meta:
+        model = Pedido
+        fields = [
+            'cliente', 'item'
+        ]
