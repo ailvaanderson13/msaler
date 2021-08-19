@@ -42,19 +42,22 @@ function create_cart(pk_produto, name_prod){
         };
     });
     if (ok){
+        var html = `
+            <tr>
+                <td>
+                    <div class="button-group">
+                        <button class="btn btn-danger btn-apagar list-cart" btn-sm shadow list-cart" value="${pk_produto}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+                <td> ${name_prod} </td>
+                <td><input type="tel" class="form-control qtd-item" style="width:60px; height:30px" min="1" value="1"></td>
+                <td><input type="tel" class="form-control price" style="width:100px; height:30px" min="1"></td>
+            </tr>
+        `
         $('.cart').append(
-        '<tr>' +
-            '<td>'+
-                '<div class="button-group">' +
-                    `<button class="btn btn-danger btn-apagar list-cart" btn-sm shadow list-cart" value="${pk_produto}">` +
-                        '<i class="fas fa-trash"></i>' +
-                    '</button>' +
-                '</div>' +
-            '</td>' +
-            `<td> ${name_prod} </td>` +
-            '<td><input type="number" class="form-control qtd-item" style="width:60px; height:30px" min="1" value="1"></td>' +
-            '<td><input type="text" class="form-control price" style="width:100px; height:30px" min="1"></td>' +
-        '</tr>'
+            html
         );
         mask_();
     }
@@ -159,11 +162,15 @@ function modal_finalizar(name_cliente, qtd_item){
                         <span id="valor"><h4 class="text-success"><strong>R$: 1200,00</strong></h4></span>
                         <br>
                         <label for="pgto">Forma de pagamento</label>
-                        <select class="form-control" name="pgto" id="pgto"><br>
-                            <option value="0">Dinheiro</option>
-                            <option value="1">Crédito</option>
+                        <select class="form-control pgto" name="pgto" id="pgto"><br>
+                            <option value="0">---selecione---</option>
+                            <option value="1">Dinheiro</option>
                             <option value="2">Débito</option>
+                            <option value="3">Crédito</option>
                         </select>
+                        <div class="pagamento">
+
+                        </div>
                     </div>
                 </div><br>
                 <label for="obs">Observação</label>
@@ -172,4 +179,31 @@ function modal_finalizar(name_cliente, qtd_item){
         `
     })
 }
+
+$(document).on('change', '.pgto', function(){
+    if ($(this).val() == '1'){
+        var html = `
+            <div class="row">
+                <div class="col-sm-12">
+                    <label for="cedulas">Valor pago</label>
+                    <input type="tel" class="form-control cedulas price" id="cedulas">
+                    <div class="troco">
+                    </div>
+                </div>
+            </div>
+        `
+        $('.pagamento').append(
+            html
+        )
+        mask_();
+    } else{
+        $('.pagamento').empty();
+    }
+})
+
+$(document).on('focusout', '.cedulas', function(){
+    if($(this).val() != ''){
+        $('.troco').empty().append('<label for="troco">Troco</label><input class="form-control" id="troco" value="aqui" disabled>')
+    }
+})
 
