@@ -53,7 +53,7 @@ def list_item(request):
     notification = None
     itens = None
 
-    itens = models.Item.objects.filter(is_active=True)
+    itens = models.Item.objects.filter(is_active=True).order_by('nome')
 
     if not itens:
         msg = "Nenhum Produto Cadastrado"

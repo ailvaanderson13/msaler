@@ -14,7 +14,6 @@ $('.add-cart').on('click', function(){
             confirmButtonColor: '#30A5FF',
         })
     } else {
-        $('#id-cliente').attr('disabled', true);
         $('.container-cart').attr('hidden', false);
 
         produtos.push($(this).val());
@@ -53,8 +52,8 @@ function create_cart(pk_produto, name_prod){
                 '</div>' +
             '</td>' +
             `<td> ${name_prod} </td>` +
-            '<td><input min="1" class="form-control qtd-item" style="width:60px; height:30px" type="number" value="1"></td>' +
-            '<td><input type="text" min="1" class="form-control price" style="width:100px; height:30px"></td>' +
+            '<td><input type="number" class="form-control qtd-item" style="width:60px; height:30px" min="1" value="1"></td>' +
+            '<td><input type="text" class="form-control price" style="width:100px; height:30px" min="1"></td>' +
         '</tr>'
         );
         mask_();
@@ -74,76 +73,103 @@ $(document).on('click', '.btn-apagar', function(){
         if (result.isConfirmed) {
             $(this).parent().parent().parent().remove();
             Swal.fire({
-                position: 'top-center',
+                position: 'center',
                 icon: 'success',
                 title: 'item excluido!',
                 showConfirmButton: false,
                 timer: 1500
             })
-        }
+        };
+        if ($('.cart').is(':empty')){
+            $('.container-cart').attr('hidden', true);
+        };
     })
 });
 
 $('.btn-prosseguir').on('click', function(){
     let ok = true;
-    $('.price').each(function(){
-        if ($(this).val() == ''){
+    let dict_cart = {};
+    let qtd_item = 0;
+    let val_item = 0;
+
+    var select = document.querySelector('#id-cliente');
+    var option = select.children[select.selectedIndex];
+    var name_cliente = option.textContent;
+
+    $('.qtd-item').each(function(){
+        if ($(this).val() <= 0){
             ok = false;
             $(this).focus().css({'border-color': 'red', 'box-shadow': '0 0 0 0'});
             Swal.fire({
                 position: 'center',
                 icon: 'error',
-                title: 'Preencha o valor dos itens para prosseguir!',
+                title: 'A quantidade precisa ser maior ou igual a 1!',
                 showConfirmButton: false,
-                timer: 1700
+                timer: 3500
             })
+        }else{
+            qtd_item += parseInt($(this).val());
         }
     });
+    console.log(qtd_item)
     if (ok){
-        let valor = 0;
-        let qtd_item = 0
-        $('.qtd-item').each(function(){
-            qtd_item += parseInt($(this).val());
-        });
-        console.log(qtd_item)
         $('.price').each(function(){
-            let val = parseFloat($(this).val());
-            valor += val;
-            console.log(valor.toFixed(2))
+            if($(this).val() == ''){
+                ok = false;
+                $(this).focus().css({'border-color': 'red', 'box-shadow': '0 0 0 0'});
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Preencha o valor do(s) produto(s) para prosseguir!',
+                    showConfirmButton: false,
+                    timer: 3500
+                })
+            } else {
+                val_item += parseFloat($(this).val());
+            }
         });
-        Swal.fire({
-            position: 'center',
-            title: 'Detalhes do pedido!',
-            showCancelButton: true,
-            confirmButtonText: 'Salvar',
-            denyButtonText: 'Fechar',
-            confirmButtonColor: '#30A5FF',
-            cancelButtonColor: '#F9243F',
-            html:`
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-sm-6 col-md-8 col-lg-12">
-                            <label for="cliente">Cliente: </label>
-                            <span id="cliente"><h4>Thainara</h4></span>
-
-                            <label for="qtd">Quantidade: </label>
-                            <span id="qtd"><h4>100</h4></span>
-
-                            <label for="valor">Valor: </label>
-                            <span id="valor"><h4 class="text-success"><strong>R$:1200,00</strong></h4></span>
-                            <br>
-                            <label for="pgto">Forma de pagamento</label>
-                            <select class="form-control" name="pgto" id="pgto"><br>
-                                <option value="0">Dinheiro</option>
-                                <option value="1">Crédito</option>
-                                <option value="2">Débito</option>
-                            </select>
-                        </div>
-                    </div><br>
-                    <label for="obs">Observação</label>
-                    <textarea class="form-control" name="obs" id="obs" cols="auto" rows="auto" placeholder="Opcional"></textarea>
-                </div>
-            `
-        })
     }
-})
+    console.log(val_item)
+
+    if (ok){
+        modal_finalizar(name_cliente, qtd_item)
+    }
+});
+
+function modal_finalizar(name_cliente, qtd_item){
+    Swal.fire({
+        position: 'center',
+        title: 'Detalhes do pedido!',
+        showCancelButton: true,
+        confirmButtonText: 'Finalizar',
+        cancelButtonText: 'Fechar',
+        confirmButtonColor: '#30A5FF',
+        cancelButtonColor: '#F9243F',
+        html:`
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6 col-md-8 col-lg-12">
+                        <label for="cliente">Cliente: </label>
+                        <span id="cliente"><h4>${name_cliente}</h4></span>
+
+                        <label for="qtd">Quantidade de itens:</label>
+                        <span id="qtd"><h4>${qtd_item}</h4></span>
+
+                        <label for="valor">Valor total: </label>
+                        <span id="valor"><h4 class="text-success"><strong>R$: 1200,00</strong></h4></span>
+                        <br>
+                        <label for="pgto">Forma de pagamento</label>
+                        <select class="form-control" name="pgto" id="pgto"><br>
+                            <option value="0">Dinheiro</option>
+                            <option value="1">Crédito</option>
+                            <option value="2">Débito</option>
+                        </select>
+                    </div>
+                </div><br>
+                <label for="obs">Observação</label>
+                <textarea class="form-control" name="obs" id="obs" cols="auto" rows="auto" placeholder="Opcional"></textarea>
+            </div>
+        `
+    })
+}
+

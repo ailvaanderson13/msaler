@@ -13,7 +13,7 @@ def create_pedido(request):
 
     clientes = Cliente.objects.filter(is_active=True)
 
-    produtos = Item.objects.filter(is_active=True)
+    produtos = Item.objects.filter(is_active=True).order_by('nome')
 
     context = {
         'page_title': page_title, 'notification': notification, 'msg': msg, 'clientes': clientes, 'produtos': produtos

@@ -20,7 +20,16 @@ class PedidoForm(forms.ModelForm):
         queryset=Item.objects.filter(is_active=True),
         widget=forms.SelectMultiple(
             attrs={
-                'class': 'form-control ls-select'
+                'class': 'form-control'
+            }
+        )
+    )
+
+    obs = forms.CharField(
+        label='Observações',
+        widget=forms.Textarea(
+            attrs={
+                'class': 'form-control', 'placeholder': 'Opcional'
             }
         )
     )
@@ -28,5 +37,5 @@ class PedidoForm(forms.ModelForm):
     class Meta:
         model = Pedido
         fields = [
-            'cliente', 'item'
+            'cliente', 'item', 'obs'
         ]
