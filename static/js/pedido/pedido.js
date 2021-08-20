@@ -1,6 +1,3 @@
-function mask_(){
-    $('.price').mask('000.000.000.000.000,00', {reverse: true});
-}
 let produtos = [];
 $('.add-cart').on('click', function(){
     let pk_cliente = $('#id-cliente').val();
@@ -42,24 +39,20 @@ function create_cart(pk_produto, name_prod){
         };
     });
     if (ok){
-        var html = `
-            <tr>
-                <td>
-                    <div class="button-group">
-                        <button class="btn btn-danger btn-apagar list-cart" btn-sm shadow list-cart" value="${pk_produto}">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </td>
-                <td> ${name_prod} </td>
-                <td><input type="tel" class="form-control qtd-item" style="width:60px; height:30px" min="1" value="1"></td>
-                <td><input type="tel" class="form-control price" style="width:100px; height:30px" min="1"></td>
-            </tr>
-        `
         $('.cart').append(
-            html
-        );
-        mask_();
+        `<tr class="line" id_line="${pk_produto}">
+            <td>
+                <div class="button-group">
+                    <button class="btn btn-danger btn-apagar list-cart btn-sm shadow list-cart" value="${pk_produto}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+            <td> ${name_prod} </td>
+            <td><input type="tel" class="form-control qtd-item calc id-${pk_produto}" style="width:60px; height:30px" min="1" value="1"></td>
+            <td><input type="tel" class="form-control price calc" id="id-${pk_produto}" style="width:100px; height:30px" min="1" value="1"></td>
+            <td><span class="form-control total-item mult-total-${pk_produto}" style="width:100px; height:30px"></span></td>
+        </tr>`);
     }
 };
 
@@ -89,11 +82,12 @@ $(document).on('click', '.btn-apagar', function(){
     })
 });
 
+let val_total = 0;
 $('.btn-prosseguir').on('click', function(){
     let ok = true;
-    let dict_cart = {};
     let qtd_item = 0;
     let val_item = 0;
+    val_total = 0;
 
     var select = document.querySelector('#id-cliente');
     var option = select.children[select.selectedIndex];
@@ -114,7 +108,6 @@ $('.btn-prosseguir').on('click', function(){
             qtd_item += parseInt($(this).val());
         }
     });
-    console.log(qtd_item)
     if (ok){
         $('.price').each(function(){
             if($(this).val() == ''){
@@ -127,19 +120,23 @@ $('.btn-prosseguir').on('click', function(){
                     showConfirmButton: false,
                     timer: 3500
                 })
-            } else {
-                val_item += parseFloat($(this).val());
             }
         });
-    }
-    console.log(val_item)
+    };
+
+    if(ok){
+        $('.total-item').each(function(){
+            val_item = $(this).text().replace(',', '.');
+            val_total += parseFloat(val_item);
+        })
+    };
 
     if (ok){
-        modal_finalizar(name_cliente, qtd_item)
+        modal_finalizar(name_cliente, qtd_item, val_total)
     }
 });
 
-function modal_finalizar(name_cliente, qtd_item){
+function modal_finalizar(name_cliente, qtd_item, val_total){
     Swal.fire({
         position: 'center',
         title: 'Detalhes do pedido!',
@@ -159,7 +156,7 @@ function modal_finalizar(name_cliente, qtd_item){
                         <span id="qtd"><h4>${qtd_item}</h4></span>
 
                         <label for="valor">Valor total: </label>
-                        <span id="valor"><h4 class="text-success"><strong>R$: 1200,00</strong></h4></span>
+                        <h3 class="text-success soma-total">${val_total.toFixed(2).replace('.',',')}</h4>
                         <br>
                         <label for="pgto">Forma de pagamento</label>
                         <select class="form-control pgto" name="pgto" id="pgto"><br>
@@ -177,6 +174,10 @@ function modal_finalizar(name_cliente, qtd_item){
                 <textarea class="form-control" name="obs" id="obs" cols="auto" rows="auto" placeholder="Opcional"></textarea>
             </div>
         `
+    }).then((result) =>{
+        if(result.isConfirmed){
+            create_json_cart()
+        }
     })
 }
 
@@ -186,7 +187,7 @@ $(document).on('change', '.pgto', function(){
             <div class="row">
                 <div class="col-sm-12">
                     <label for="cedulas">Valor pago</label>
-                    <input type="tel" class="form-control cedulas price" id="cedulas">
+                    <input type="tel" class="form-control cedulas" id="cedulas">
                     <div class="troco">
                     </div>
                 </div>
@@ -195,7 +196,6 @@ $(document).on('change', '.pgto', function(){
         $('.pagamento').append(
             html
         )
-        mask_();
     } else{
         $('.pagamento').empty();
     }
@@ -203,7 +203,50 @@ $(document).on('change', '.pgto', function(){
 
 $(document).on('focusout', '.cedulas', function(){
     if($(this).val() != ''){
-        $('.troco').empty().append('<label for="troco">Troco</label><input class="form-control" id="troco" value="aqui" disabled>')
+        $('.troco').empty().append('<label for="troco">Troco</label><span class="form-control text-warning" id="troco"></span>')
+        calculo_troco();
     }
 })
 
+function calculo_troco(){
+    let valor = $('#cedulas').val().replace(',', '.');
+    let total = val_total;
+    let prefix = 'R$: '
+    if (valor){
+        let troco = valor - total;
+        $('#troco').append(prefix + troco.toFixed(2).replace('.', ','))
+    }
+}
+
+$(document).on('focusout', '.calc', function(){
+    let test = $(this).parent().parent().attr('id_line');
+    let valor = $('#id-' + test).val().replace(',', '.');
+    let qtd = $('.id-' + test).val();
+    let total_por_item = parseInt(qtd) * parseFloat(valor).toFixed(2)
+
+    if (valor && qtd != ''){
+        $('.mult-total-' + test).empty().append(total_por_item.toFixed(2).replace('.', ','))
+    }
+});
+
+var list_cart = [];
+function create_json_cart(){
+    var pedido = {'cliente': $('#id-cliente').val()}
+    $('.line').each(function(){
+        let pk_produto = $(this).attr('id_line');
+        let qtd = $(this).children()[2].children[0].value;
+        let valor_uni = $(this).children()[3].children[0].value;
+
+        console.log(pk_produto)
+        console.log(qtd)
+        console.log(valor_uni)
+        console.log('-----')
+//        pedido['pedido'] = {
+//            'id-produto': pk_produto,
+//            'qtd': qtd,
+//            'valor_uni': valor_uni
+//        };
+//        list_cart.push(pedido)
+    });
+//    console.log(list_cart)
+}
