@@ -8,3 +8,4 @@ def dashboard(request):
         'page_title': page_title
     }
     return render(request, 'dashboard/dashboard.html', context)
+

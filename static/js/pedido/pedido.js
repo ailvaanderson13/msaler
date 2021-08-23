@@ -171,7 +171,7 @@ function modal_finalizar(name_cliente, qtd_item, val_total){
                     </div>
                 </div><br>
                 <label for="obs">Observação</label>
-                <textarea class="form-control" name="obs" id="obs" cols="auto" rows="auto" placeholder="Opcional"></textarea>
+                <textarea class="form-control" id="obs" name="obs" id="obs" cols="auto" rows="auto" placeholder="Opcional"></textarea>
             </div>
         `
     }).then((result) =>{
@@ -231,22 +231,60 @@ $(document).on('focusout', '.calc', function(){
 
 var list_cart = [];
 function create_json_cart(){
-    var pedido = {'cliente': $('#id-cliente').val()}
+    list_cart = [];
+    let pedido = {'pedido': []};
     $('.line').each(function(){
         let pk_produto = $(this).attr('id_line');
         let qtd = $(this).children()[2].children[0].value;
         let valor_uni = $(this).children()[3].children[0].value;
-
-        console.log(pk_produto)
-        console.log(qtd)
-        console.log(valor_uni)
-        console.log('-----')
-//        pedido['pedido'] = {
-//            'id-produto': pk_produto,
-//            'qtd': qtd,
-//            'valor_uni': valor_uni
-//        };
-//        list_cart.push(pedido)
+        let dict_temp = {
+            'id-produto': pk_produto,
+            'qtd': qtd,
+            'valor_uni': valor_uni
+        };
+        pedido['pedido'].push(dict_temp)
+        dict_temp = {};
     });
-//    console.log(list_cart)
+
+    list_cart.push(pedido);
+
+    let obs = $('#obs').val();
+    let forma_pag = $('#pgto').val();
+    let id_cliente = $('#id-cliente').val();
+
+    $.ajax({
+        'url': '/pedido/open-new-pedido/',
+        'dataType': 'json',
+        'method': 'POST',
+        'data': {
+            'list_pedido': JSON.stringify(list_cart),
+            'id_cliente': id_cliente,
+            'obs': obs,
+            'forma_pag': forma_pag,
+        },
+        success: function(data){
+           if (data.success){
+               Swal.fire({
+                   position: 'center',
+                   icon: 'success',
+                   title: 'Pedido Cadastrado com Sucesso!',
+                   allowOutsideClick: false,
+                   allowEscapeKey: false,
+               }).then((result) => {
+                   if (result.value) {
+                       location.reload();
+                   }
+               });
+           } else {
+               Swal.fire({
+                   position: 'center',
+                   icon: 'error',
+                   title: 'Oops...',
+                   text: 'Houve um problema ao salvar seu pedido! Entre em contato com o suporte!',
+                   allowOutsideClick: false,
+                   allowEscapeKey: false,
+               });
+           }
+        }
+    })
 }
