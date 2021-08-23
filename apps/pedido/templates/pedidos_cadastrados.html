@@ -8,16 +8,16 @@
             <tr>
                 <th class="text-center">Ação</th>
                 <th class="text-center">Cliente</th>
-                <th class="text-center">Produto</th>
-                <th class="text-center">data</th>
+                <th class="text-center">Data</th>
             </tr>
             </thead>
             <tbody>
-            {% for u in clientes %}
+            {% for u in pedidos %}
             <tr>
                 <td align="center">
-                    <div class="btn-group btn-group-smd shadow" role="group" aria-label="Basic example">
-                        <a href="{% url 'cliente:edit-cliente' u.pk %}" class="btn btn-success btn-sm shadow"><i class="fas fa-pencil-alt"></i></a>
+                    <div class="btn-group btn-group-sm shadow" role="group" aria-label="Basic example">
+                        <a href="{% url 'cliente:edit-cliente' u.pk %}" class="btn btn-success shadow"><i class="fas fa-pencil-alt"></i></a>
+                        <a href="#" class="btn btn-primary shadow btn-detail"><i class="fas fa-eye"></i></a>
                     </div>
                 </td>
                 <td align="center">{{ u.cliente.nome }}</td>

@@ -50,7 +50,7 @@ function create_cart(pk_produto, name_prod){
             </td>
             <td> ${name_prod} </td>
             <td><input type="tel" class="form-control qtd-item calc id-${pk_produto}" style="width:60px; height:30px" min="1" value="1"></td>
-            <td><input type="tel" class="form-control price calc" id="id-${pk_produto}" style="width:100px; height:30px" min="1" value="1"></td>
+            <td><input type="tel" class="form-control price calc" id="id-${pk_produto}" style="width:100px; height:30px" min="1"></td>
             <td><span class="form-control total-item mult-total-${pk_produto}" style="width:100px; height:30px"></span></td>
         </tr>`);
     }
