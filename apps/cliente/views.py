@@ -1,4 +1,7 @@
+from django.http import JsonResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+
 from . import models, forms
 
 
@@ -65,3 +68,19 @@ def list_cliente(request):
     }
 
     return render(request, 'clientes_cadastrados.html', context)
+
+
+@csrf_exempt
+def delete_cliente(request):
+    response = {
+        'success': False
+    }
+    print(request.method)
+    if request.method == 'POST':
+        pk = request.POST.get('pk', None)
+        if pk:
+            cliente = models.Cliente.objects.get(pk=pk)
+            cliente.is_active = False
+            cliente.save()
+            response['success'] = True
+    return JsonResponse(response, safe=False)

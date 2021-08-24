@@ -1,8 +1,3 @@
-$(document).ready(function(){
-    $('#id_cpf').mask('000.000.000-00', {reverse: true});
-    $('#id_telefone').mask('(00) 00000-0000');
-})
-
 $('.btn-trash').on({
     'click': function () {
         let pk = $(this).val();
@@ -18,7 +13,7 @@ $('.btn-trash').on({
         }).then((result) => {
             if (result.value) {
                 $.ajax({
-                    'url': '/cliente/delete/',
+                    'url': '/item/delete/',
                     'method': 'POST',
                     'dataType': 'json',
                     'data': {
@@ -28,7 +23,7 @@ $('.btn-trash').on({
                         if (data.success) {
                             Swal.fire({
                                 title: 'Excluido!',
-                                text: "O cliente foi excluido!",
+                                text: "O item foi excluido!",
                                 icon: 'success',
                                 allowOutsideClick: false,
                                 allowEscapeKey: false,
@@ -40,7 +35,7 @@ $('.btn-trash').on({
                         } else {
                             Swal.fire(
                                 'Erro!',
-                                'Erro ao tentar excluir cliente!',
+                                'Erro ao tentar excluir o item!',
                                 'error'
                             )
                         }

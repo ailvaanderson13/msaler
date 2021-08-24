@@ -232,7 +232,7 @@ $(document).on('focusout', '.calc', function(){
 var list_cart = [];
 function create_json_cart(){
     list_cart = [];
-    let pedido = {'pedido': []};
+    let pedido = {'produtos': []};
     $('.line').each(function(){
         let pk_produto = $(this).attr('id_line');
         let qtd = $(this).children()[2].children[0].value;
@@ -242,7 +242,7 @@ function create_json_cart(){
             'qtd': qtd,
             'valor_uni': valor_uni
         };
-        pedido['pedido'].push(dict_temp)
+        pedido['produtos'].push(dict_temp)
         dict_temp = {};
     });
 
@@ -288,3 +288,63 @@ function create_json_cart(){
         }
     })
 }
+
+$('.btn-detail').on('click', function(){
+    let pk = $(this).val();
+    if (pk){
+        $.ajax({
+            'url': '/pedido/detail-pedido/',
+            'dataType': 'json',
+            'method': 'POST',
+            'data': {
+                'pk': pk
+            },
+            success: function(data){
+                if(data.success){
+                    Swal.fire({
+                        position: 'center',
+                        width: 600,
+                        html: `
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                                    <h4><b>Produtos</b></h4><hr>
+                                    <div class="table-responsive ">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <td>Nome</td>
+                                                    <td>Valor</td>
+                                                    <td>Qtd.</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${data.line}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <h4><b>Detalhes</b></h4><hr>
+                                    <label for="codigo">Código: </label>
+                                    <span class="text-danger" id="codigo"><b>${data['pedido'][0]['codigo']}</b></span><br>
+
+                                    <label for="cliente">Cliente: </label>
+                                    <span id="cliente">${data['pedido'][0]['cliente__nome']}</span><br>
+
+                                    <label for="cliente">Usuário </label>
+                                    <span id="cliente">${data['pedido'][0]['employee__first_name']}</span><br>
+
+                                    <label for="pgto">Forma de Pag.: </label>
+                                    <span id="pgto">${data['pag']}</span><br>
+
+                                    <label for="obs">Observação: </label>
+                                    <span id="obs">${data['obs']}</span>
+                                </div>
+                            </div>
+                       `
+                    })
+                }
+            }
+        })
+    }
+})

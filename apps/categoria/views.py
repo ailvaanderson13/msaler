@@ -1,4 +1,7 @@
+from django.http import JsonResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+
 from . import forms, models
 
 
@@ -65,3 +68,18 @@ def list_categoria(request):
 
     return render(request, 'categorias_cadastradas.html', context)
 
+
+@csrf_exempt
+def delete_categoria(request):
+    response = {
+        'success': False
+    }
+    print(request.method)
+    if request.method == 'POST':
+        pk = request.POST.get('pk', None)
+        if pk:
+            categoria = models.Category.objects.get(pk=pk)
+            categoria.is_active = False
+            categoria.save()
+            response['success'] = True
+    return JsonResponse(response, safe=False)

@@ -6,4 +6,5 @@ urlpatterns = [
     path('open-new-pedido/', views.safe_pedido, name="open-new-pedido"),
     path('edit-pedido/<int:pk>', views.create_pedido, name="edit-pedido"),
     path('list-pedido/', views.list_pedidos, name="list-pedido"),
+    path('detail-pedido/', views.detail_pedido, name="detail-pedido"),
 ]
