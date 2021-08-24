@@ -130,7 +130,7 @@ def detail_pedido(request):
             elif pag == '3':
                 pag = 'Crédito'
 
-            if obs == '' or ' ':
+            if obs in [None, '', ' ', 'null']:
                 obs = 'Nenhuma Observação'
 
             pedido = models.Pedido.objects.filter(pk=pk).values('codigo', 'employee__first_name',
