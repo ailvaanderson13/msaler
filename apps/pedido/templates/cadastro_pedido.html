@@ -45,7 +45,8 @@
         </tbody>
     </table>
 </div>
-<div class="container-cart" hidden>
+
+<div class="container-cart" {% if not pk %} hidden {% endif %}>
     <hr style="border: 2px solid; border-radius: 10px">
     <span>
         <i class="fas fa-cart-plus"></i>
@@ -63,7 +64,7 @@
                     <th>Total(R$)</th>
                 </tr>
                 </thead>
-                <tbody class="cart"></tbody>
+                <tbody class="cart">{{ line|safe }}</tbody>
             </table>
         </div>
     </div>
@@ -74,8 +75,6 @@
         </div>
     </div>
 </div>
-
-
 
 {% endblock %}
 {% block script %}

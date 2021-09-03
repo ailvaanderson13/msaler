@@ -25,17 +25,8 @@ class PedidoForm(forms.ModelForm):
         )
     )
 
-    obs = forms.CharField(
-        label='Observações',
-        widget=forms.Textarea(
-            attrs={
-                'class': 'form-control', 'placeholder': 'Opcional'
-            }
-        )
-    )
-
     class Meta:
         model = Pedido
         fields = [
-            'cliente', 'item', 'obs'
+            'cliente', 'item'
         ]

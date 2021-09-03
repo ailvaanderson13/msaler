@@ -219,13 +219,13 @@ function calculo_troco(){
 }
 
 $(document).on('focusout', '.calc', function(){
-    let test = $(this).parent().parent().attr('id_line');
-    let valor = $('#id-' + test).val().replace(',', '.');
-    let qtd = $('.id-' + test).val();
+    let identify = $(this).parent().parent().attr('id_line');
+    let valor = $('#id-' + identify).val().replace(',', '.');
+    let qtd = $('.id-' + identify).val();
     let total_por_item = parseInt(qtd) * parseFloat(valor).toFixed(2)
 
     if (valor && qtd != ''){
-        $('.mult-total-' + test).empty().append(total_por_item.toFixed(2).replace('.', ','))
+        $('.mult-total-' + identify).empty().append(total_por_item.toFixed(2).replace('.', ','))
     }
 });
 

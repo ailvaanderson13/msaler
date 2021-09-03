@@ -51,17 +51,79 @@ def safe_pedido(request):
     return JsonResponse(response, safe=False)
 
 
-def create_pedido(request):
-    page_title = 'Novo Pedido'
+def create_update_pedido(request, pk=None):
+    page_title = 'Novo Pedido' if not pk else 'Editar Pedido'
     notification = None
     msg = None
-
-    clientes = Cliente.objects.filter(is_active=True)
+    line = ''
+    col0 = ''
+    col1 = ''
+    col2 = ''
+    col3 = ''
+    col4 = ''
+    obs = ''
+    pag = None
+    clientes = None
+    produto = None
 
     produtos = Item.objects.filter(is_active=True).order_by('nome')
+    clientes = Cliente.objects.filter(is_active=True)
+
+    if pk:
+        pedido = models.Pedido.objects.get(pk=pk)
+        if pedido:
+            pag = pedido.forma_pag
+            obs = pedido.obs
+            detalhes = eval(pedido.detalhes)
+
+            for i in detalhes:
+                if type(i) == dict:
+                    for k, v in i.items():
+                        if type(v) == list:
+                            for ii in v:
+                                if type(ii) == dict:
+                                    for kk, vv in ii.items():
+                                        if kk == 'id-produto':
+                                            produto = models.Item.objects.get(pk=vv)
+                                            col0 = f"""
+                                                <td>
+                                                    <div class="button-group">
+                                                        <button class='btn btn-danger btn-apagar list-cart btn-sm shadow
+                                                         list-cart' value='{produto.pk}'>
+                                                            <i class='fas fa-trash'></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            """
+                                            col1 = f"<td>{produto.nome}</td>"
+                                        if kk == 'qtd':
+                                            col2 = f"<td><input type='tel' class='form-control qtd-item calc " \
+                                                   f"id-{produto.pk}' style='width:60px; height:30px' min='1' " \
+                                                   f"value='{vv}'></td>"
+                                        if kk == 'valor_uni':
+                                            col3 = f"<td><input type='tel' class='form-control price calc' " \
+                                                   f"id='id-{produto.pk}' style='width:100px; height:30px' min='1' " \
+                                                   f"value={vv}></td>"
+                                            col4 = f"<td><span class='form-control total-item mult-total-{produto.pk}' " \
+                                                   f"style='width:100px; height:30px'></span></td>"
+
+                                    line += f"<tr class='line' id_line={produto.pk}>{col0}{col1}{col2}{col3}{col4}</tr>"
+
+            if pag == '0':
+                pag = 'Nenhum'
+            elif pag == '1':
+                pag = 'Dinheiro'
+            elif pag == '2':
+                pag = 'Débito'
+            elif pag == '3':
+                pag = 'Crédito'
+
+            if obs in [None, '', ' ', 'null']:
+                obs = 'Nenhuma Observação'
 
     context = {
-        'page_title': page_title, 'notification': notification, 'msg': msg, 'clientes': clientes, 'produtos': produtos
+        'page_title': page_title, 'notification': notification, 'msg': msg, 'clientes': clientes, 'produtos': produtos,
+        'pk': pk, 'pag': pag, 'line': line, 'obs': obs
     }
 
     return render(request, 'cadastro_pedido.html', context)
