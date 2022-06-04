@@ -2,13 +2,12 @@ from django.db import models
 from apps.cliente.models import Cliente
 from apps.store.models import Store
 from apps.item.models import Item
-from apps.employee.models import Employee
+from apps.user.models import User
 from . import choices
 
 
 class Pedido(models.Model):
     codigo = models.CharField(max_length=15)
-    employee = models.ForeignKey(to=Employee, on_delete=models.DO_NOTHING, blank=True, null=True)
     cliente = models.ForeignKey(to=Cliente, on_delete=models.DO_NOTHING, blank=True, null=True)
     item = models.ManyToManyField(to=Item, blank=True, null=True)
     loja = models.ForeignKey(to=Store, on_delete=models.DO_NOTHING, blank=True, null=True)
@@ -19,7 +18,7 @@ class Pedido(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"{self.codigo} - {self.cliente.nome}"
+        return f"{self.codigo} - {self.cliente.first_name}"
 
     class Meta:
         verbose_name = 'Pedido'

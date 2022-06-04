@@ -10,8 +10,9 @@ def new_category(request, pk=None):
     form = forms.CategoriaForm()
     msg = None
     notification = None
+    icon=None
     categoria = None
-    loja = request.user.loja
+    company = request.user.company
 
     if pk:
         categoria = models.Category.objects.get(pk=pk)
@@ -29,20 +30,24 @@ def new_category(request, pk=None):
             if form.is_valid():
                 if categoria:
                     form.save()
-                    msg = 'Editado com Sucesso!'
-                    notification = 'success'
                 else:
                     new_categoria = form.save(commit=False)
-                    new_categoria.loja = loja
+                    new_categoria.company = company
                     new_categoria.save()
-                    msg = 'Salvo com Sucesso!'
-                    notification = 'success'
-                form = forms.CategoriaForm()
+                msg = 'Categoria cadastrada com sucesso!'
+                icon = 'alert-success'
             else:
-                msg = 'erro ao salvar'
-                notification = 'danger'
+                msg = 'Categoria cadastrada com sucesso!'
+                icon = 'alert-success'
         except Exception as e:
-            print(e)
+            msg = e
+            icon = 'alert-danger'
+
+        if not categoria:
+            form = forms.CategoriaForm()
+    notification = {
+        'icon': icon, 'msg': msg 
+    }
     context = {
         'page_title': page_title, 'notification': notification, 'msg': msg, 'form': form
     }
@@ -53,14 +58,20 @@ def list_categoria(request):
     page_title = 'Categorias Cadastradas'
     categorias = None
     msg = None
+    icon=None
     notification = None
-    loja = request.user.loja
+    company = request.user.company if request.user.company else None
 
-    categorias = models.Category.objects.filter(is_active=True)
+    if company:
+        categorias = models.Category.objects.filter(is_active=True, company=company)
+    else:
+        categorias = models.Category.objects.filter(is_active=True)
 
     if not categorias:
-        msg = 'Nenhuma Categoria cadastradas'
-        notification = 'danger'
+        msg = 'Nenhuma categoria cadastrada'
+        icon = 'alert-warning'
+
+    notification = {'msg': msg, 'icon': icon}
 
     context = {
         'page_title': page_title, 'categorias': categorias, 'msg': msg, 'notification': notification

@@ -1,7 +1,12 @@
 {% extends 'base/base.html' %}
 {% load static %}
 {% block content %}
-
+{% if msg %}
+    <div class="alert {{notification.icon}}"> <i class="fas fa-bell"></i>
+        {{notification.msg}}
+    </div>
+    <a href="{% url 'cliente:new-cliente'%}" class="btn btn-success">Cadastrar cliente</a>
+{% else %}
 <div class="panel-body">
     <div class="table-responsive">
         <table class="table">
@@ -35,6 +40,12 @@
         </table>
     </div>
 </div>
+<div class="row ">
+    <div class="col-md-3 ml-md-auto">
+        <a href="{% url 'categoria:new-category' %}" class="btn btn-success">Novo cliente</a>
+    </div>
+</div>
+{% endif %}
 {% endblock %}
 {% block script %}
     <script src="{% static 'js/cliente/cliente.js' %}"></script>

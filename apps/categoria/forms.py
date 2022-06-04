@@ -13,6 +13,7 @@ class CategoriaForm(forms.ModelForm):
     )
 
     descricao = forms.CharField(
+        required=False,
         label="Descrição",
         widget=forms.Textarea(
             attrs={

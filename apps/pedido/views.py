@@ -204,3 +204,39 @@ def detail_pedido(request):
             response['success'] = True
 
     return JsonResponse(response, safe=False)
+
+
+@csrf_exempt
+def get_product(request):
+    response = {
+        'success' : False
+    }
+
+    code = request.POST.get('code', None)
+    qtd = request.POST.get('qtd', None)
+
+    qtd_line = 0
+
+    if not qtd:
+        qtd = 1
+    if code:
+        item = Item.objects.filter(code_bar=code, is_active=True).last()
+        if item:
+            line = f"""
+                <tr>
+                    <td class="qtd_line">{qtd_line}</td>
+                    <td>{item.nome}</td>
+                    <td class="qtd_item">{int(qtd)}</td>
+                    <td class="val_uni">{int(item.valor_venda)}</td>
+                    <td class="val_total">{int(qtd)*item.valor_venda}</td>
+                    <td>
+                        <div class="button-group">
+                            <button type="button" class="btn btn-white btn_trash"><i class="fas fa-trash text-danger"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            """
+            response['item'] = str(line)
+            response['success'] = True
+
+    return JsonResponse(response, safe=False)

@@ -3,11 +3,11 @@
 {% block content %}
 
 <div class="panel-body">
-    {% if notification and msg %}
+    {% if msg %}
         <div class="row">
             <div class="col" style="margin-left: 10px; margin-right: 10px">
-                <div class="alert alert-{{notification}}"><i class="fas fa-bell"></i>
-                    {{msg}}
+                <div class="alert {{notification.icon}}"><i class="fas fa-bell"></i>
+                    {{notification.msg}}
                 </div>
             </div>
         </div>

@@ -2,11 +2,11 @@
 {% block content %}
 
 <div class="panel-body">
-    {% if notification and msg %}
+    {% if msg %}
     <div class="row">
         <div class="col" style="margin-left: 10px; margin-right: 10px">
-            <div class="alert alert-{{notification}}"><i class="fas fa-bell"></i>
-                {{msg}}
+            <div class="alert {{notification.icon}}"><i class="fas fa-bell"></i>
+                {{notification.msg}}
             </div>
         </div>
     </div>
@@ -25,6 +25,7 @@
             <div class="form-group">
                 <div class="col-md-12">
                     <button type="submit" class="btn btn-primary btn-md pull-left">Salvar</button>
+                    <a href="{% url 'categoria:list-category' %}" class="btn btn-success">Categorias <i class="fas fa-grip-horizontal"></i></a>
                 </div>
             </div>
         </fieldset>

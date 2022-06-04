@@ -3,7 +3,7 @@ from .models import Cliente
 
 
 class FormCliente(forms.ModelForm):
-    nome = forms.CharField(
+    first_name = forms.CharField(
         label="Nome",
         widget=forms.TextInput(
             attrs={
@@ -12,7 +12,7 @@ class FormCliente(forms.ModelForm):
         )
     )
 
-    sobrenome = forms.CharField(
+    last_name = forms.CharField(
         label="Sobrenome",
         widget=forms.TextInput(
             attrs={
@@ -50,5 +50,5 @@ class FormCliente(forms.ModelForm):
     class Meta:
         model = Cliente
         fields = [
-            'nome', 'sobrenome', 'cpf', 'telefone', 'email'
+            'first_name', 'last_name', 'cpf', 'telefone', 'email'
         ]

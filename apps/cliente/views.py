@@ -8,10 +8,12 @@ from . import models, forms
 def cadastro_update_cliente(request, pk=None):
     page_title = 'Cadastro de Cliente' if not pk else 'Editar Cliente'
     msg = None
+    icon = None
+    name = None
     notification = None
     cliente = None
     form = forms.FormCliente()
-    loja = request.user.loja
+    company = request.user.company if request.user.company else None
 
     if pk:
         cliente = models.Cliente.objects.get(pk=pk)
@@ -19,7 +21,7 @@ def cadastro_update_cliente(request, pk=None):
             form = forms.FormCliente(instance=cliente)
         else:
             msg = 'Nenhum cliente encontrado!'
-            notification = 'danger'
+            icon = 'alert-danger'
 
     if request.method == 'POST':
         if cliente:
@@ -27,22 +29,28 @@ def cadastro_update_cliente(request, pk=None):
         else:
             form = forms.FormCliente(request.POST)
 
-        if form.is_valid():
-            if cliente:
-                form.save()
-                msg = 'Cliente editado(a) com Sucesso!'
-                notification = 'success'
-            else:
-                new_cliente = form.save(commit=False)
-                new_cliente.loja = loja if loja else None
-                new_cliente.save()
-                msg = 'Cliente Cadastrado(a) com Sucesso!'
-                notification = 'success'
-            form = forms.FormCliente()
-        else:
-            if 'cpf' in form.errors:
-                msg = f'CPF digitado já possui cadastro'
-                notification = 'warning'
+        try:
+            if form.is_valid():
+                if cliente:
+                    form.save()
+                    msg = 'Cliente editado(a) com Sucesso!'
+                    icon = 'alert-success'
+                else:
+                    new_cliente = form.save(commit=False)
+                    cpf = new_cliente.cpf
+                    username = new_cliente.email
+                    new_cliente.company = company
+                    new_cliente.username = username
+                    new_cliente.save()
+                    msg = 'Cliente Cadastrado(a) com sucesso!'
+                    icon = 'alert-success'
+                form = forms.FormCliente()
+        except Exception as e:
+            if 'username' in str(e):
+                msg = 'Este E-mail está indisponível, escolha outro'
+                icon = 'alert-warning'
+            
+    notification = {'icon': icon, 'msg': msg}
 
     context = {
         'page_title': page_title, 'notification': notification, 'msg': msg, 'form': form
@@ -54,15 +62,18 @@ def cadastro_update_cliente(request, pk=None):
 def list_cliente(request):
     page_title = 'Clientes Cadastrados(as)'
     msg = None
+    icon = None
     notification = None
     clientes = None
-
     clientes = models.Cliente.objects.filter(is_active=True)
 
     if not clientes:
         msg = 'Nenhum cliente Cadastrado(a)'
-        notification = 'danger'
+        icon = 'alert-warning'
 
+    notification = {
+        'msg': msg, 'icon': icon
+    }
     context = {
         'clientes': clientes, 'notification': notification, 'msg': msg, 'page_title': page_title
     }

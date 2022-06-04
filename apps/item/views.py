@@ -2,6 +2,8 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
+from apps.categoria.models import Category
+
 from . import models, forms
 
 
@@ -9,9 +11,10 @@ def create_update_item(request, pk=None):
     page_title = 'Cadastro de produto' if not pk else 'Editar Produto'
     msg = None
     notification = None
+    icon = None
     form = forms.ItemForm()
     item = None
-    loja = request.user.loja
+    # companay = request.user.companay
 
     if pk:
         item = models.Item.objects.get(pk=pk, is_active=True)
@@ -19,7 +22,7 @@ def create_update_item(request, pk=None):
             form = forms.ItemForm(instance=item)
         else:
             msg = 'Nenhum Produto Encontrado'
-            notification = 'danger'
+            notification = 'alert-danger'
 
     if request.method == 'POST':
         if item:
@@ -31,17 +34,19 @@ def create_update_item(request, pk=None):
             if item:
                 form.save()
                 msg = 'Produto Atualizado com Sucesso!'
-                notification = 'success'
+                icon = 'alert-success'
             else:
                 new_item = form.save(commit=False)
-                new_item.loja = loja if loja else None
+                # new_item.loja = loja if loja else None
                 new_item.save()
                 msg = 'Produto Cadastrado com Sucesso!'
-                notification = 'success'
+                icon = 'alert-success'
             form = forms.ItemForm()
         else:
             msg = form.errors
-            notification = 'danger'
+            icon = 'alert-danger'
+
+    notification = {'msg': msg, 'icon': icon}
 
     context = {
         'page_title': page_title, 'notification': notification, 'msg': msg, 'form': form
@@ -55,15 +60,32 @@ def list_item(request):
     msg = None
     notification = None
     itens = None
+    icon = None
+    company = request.user.company if request.user.company else None
+    category = Category.objects.all()
+    select_category = request.POST.get('select_category', None)
 
-    itens = models.Item.objects.filter(is_active=True).order_by('nome')
+
+    if company:
+        if select_category:
+            itens = models.Item.objects.filter(is_active=True, company=company, pk=int(select_category)).order_by('nome')
+        else:
+            itens = models.Item.objects.filter(is_active=True, company=company).order_by('nome')
+
+    else:
+        if select_category:
+            itens = models.Item.objects.filter(is_active=True, categoria__pk=int(select_category)).order_by('nome')
+        else:
+            itens = models.Item.objects.filter(is_active=True).order_by('nome')
 
     if not itens:
         msg = "Nenhum Produto Cadastrado"
-        notification = 'danger'
+        icon = 'alert-warning'
+    
+    notification = {'msg': msg, 'icon': icon}
 
     context = {
-        'page_title': page_title, 'notification': notification, 'msg': msg, 'itens': itens
+        'page_title': page_title, 'notification': notification, 'msg': msg, 'itens': itens, 'category': category
     }
 
     return render(request, 'itens_cadastrados.html', context)
